@@ -1,0 +1,78 @@
+:root{
+--gap:10px;
+--type-size:60px;
+--grid-gap:8px;
+font-family: Inter, system-ui, Arial, sans-serif;
+}
+
+
+*{box-sizing:border-box}
+body{background:#0f172a;color:#e6eef8;margin:0;line-height:1.2}
+.container{max-width:1000px;margin:30px auto;padding:20px}
+h1{text-align:center;margin-bottom:20px}
+.center{text-align:center}
+.small{font-size:12px;color:#9fb0d6}
+
+
+.big-btn{padding:12px 20px;margin:0 8px;border-radius:10px;border:none;cursor:pointer;font-weight:600}
+
+
+/* grille types */
+.type-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:var(--grid-gap);max-width:760px;margin:10px auto}
+.type-cell{height:var(--type-size);display:flex;align-items:center;justify-content:center;border-radius:8px;color:#fff;font-weight:700;cursor:pointer;border:2px solid rgba(0,0,0,0.12);user-select:none}
+.type-cell.small{height:44px;font-size:13px}
+
+
+.result-row{display:flex;gap:var(--gap);margin:12px 0;flex-wrap:wrap}
+.panel{flex:1;padding:10px;border-radius:8px;background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));min-width:240px} /* min-width augmenté pour les petits écrans */
+.panel h3{margin:6px 0 10px 0;font-size:14px}
+.panel .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.type-pill{
+    padding: 10px 8px; /* Augmentation du padding vertical pour agrandir */
+    border-radius:6px;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    font-weight:700;
+    font-size: 14px; /* Augmentation de la taille de police */
+}
+.type-pill span.mult{opacity:0.9}
+
+
+.controls{display:flex;gap:8px;justify-content:center;margin:14px 0}
+.small-btn{padding:8px 12px;border-radius:8px;border:none;cursor:pointer}
+
+
+/* spacing between the 3 parts (approximately 10px as requested is controlled by --gap and margin) */
+
+
+/* footer */
+footer{margin-top:18px}
+
+
+/* type colors (common palettes) */
+.type-Normal{background:#A8A77A;color:#1b1b1b}
+.type-Feu{background:#EE8130}
+.type-Eau{background:#6390F0}
+.type-Électrik{background:#F7D02C;color:#1b1b1b}
+.type-Plante{background:#7AC74C;color:#1b1b1b}
+.type-Glace{background:#96D9D6;color:#1b1b1b}
+.type-Combat{background:#C22E28}
+.type-Poison{background:#A33EA1}
+.type-Sol{background:#E2BF65;color:#1b1b1b}
+.type-Vol{background:#A98FF3;color:#1b1b1b}
+.type-Psy{background:#F95587}
+.type-Insecte{background:#A6B91A;color:#1b1b1b}
+.type-Roche{background:#B6A136;color:#1b1b1b}
+.type-Spectre{background:#735797}
+.type-Dragon{background:#6F35FC}
+.type-Ténèbres{background:#705746}
+.type-Acier{background:#B7B7CE;color:#1b1b1b}
+.type-Fée{background:#D685AD;color:#1b1b1b}
+
+
+/* responsive */
+@media (max-width:760px){
+.type-grid{grid-template-columns:repeat(3,1fr)}
+.panel{min-width:200px} /* Ajusté pour les petits écrans */
+}
