@@ -153,17 +153,21 @@ function defenseSingleMode(root){
   clearAndFocus(root);
   root.appendChild(make('Mode Défense (1 type) — Choisissez un Type Défenseur'));
   createTypeGrid(root, (type) => {
-    const forces = [], weaknesses = [], neutral = [];
+    // forces stockera les "faiblesses de défense" (Super Efficace: x2) 
+    // weaknesses stockera les "résistances de défense" (Peu Efficace/Immunisé: x0, x0.5)
+    const forces = [], weaknesses = [], neutral = []; 
     TYPES.forEach(att => {
       const m = getMultiplier(att, type);
       
-      // LOGIQUE INVERSÉE POUR LA DÉFENSE (Single)
-      // Dégâts reçus x2 (Faiblesse) -> vont dans 'weaknesses' (Panneau Peu Efficace/Immunisé)
-      if(m === 2) weaknesses.push({type:att, mult:'x2'});
-      // Dégâts reçus x0, x0.5 (Résistance/Immunité) -> vont dans 'forces' (Panneau Super Efficace)
-      else if(m === 0 || m === 0.5) forces.push({type:att, mult: m===0 ? 'x0' : 'x0.5'});
+      // ECHANGE: si l'attaque est SUPER EFFICACE (x2) pour la défense -> Va dans la case "Super Efficace (x2 ou x4)"
+      if(m === 2) forces.push({type:att, mult:'x2'}); 
+      
+      // ECHANGE: si l'attaque est PEU EFFICACE/IMMUNISÉE (x0, x0.5) pour la défense -> Va dans la case "Peu Efficace/Immunisé (x0, x0.25, x0.5)"
+      else if(m === 0 || m === 0.5) weaknesses.push({type:att, mult: m===0 ? 'x0' : 'x0.5'}); 
+      
       else neutral.push({type:att, mult:'x1'});
     });
+    // showResults affiche forces dans le 1er panneau et weaknesses dans le 2ème. Les listes ont été ajustées ci-dessus.
     showResults(root, {forces, weaknesses, neutral}, 'defense-single');
   });
 }
@@ -178,29 +182,31 @@ function defenseDoubleMode(root){
     info.innerHTML = `<h2>Choisissez le deuxième type (1er: ${first})</h2>`;
     root.appendChild(info);
     createTypeGrid(root, (second) => {
-      // calcule multipliers: pour chaque attacker -> multiplier = m(att, first) * m(att, second)
+      // forces stockera les "faiblesses de défense" (Super Efficace: x2, x4)
+      // weaknesses stockera les "résistances de défense" (Peu Efficace/Immunisé: x0, x0.25, x0.5)
       const forces = [], weaknesses = [], neutral = [];
       TYPES.forEach(att => {
         const m1 = getMultiplier(att, first);
         const m2 = getMultiplier(att, second);
         const mult = +(m1 * m2); // numeric
         
-      // LOGIQUE INVERSÉE POUR LA DÉFENSE (Double)
-        // Dégâts reçus x2, x4 (Faiblesses) -> vont dans 'weaknesses' (Panneau Peu Efficace/Immunisé)
+        // ECHANGE: si l'attaque est SUPER EFFICACE (x2 ou x4) pour la défense -> Va dans la case "Super Efficace (x2 ou x4)"
         if(mult === 2 || mult === 4){
           let label = mult === 4 ? 'x4' : 'x2';
-          weaknesses.push({type:att, mult:label});
-        // Dégâts reçus x0, x0.25, x0.5 (Résistances/Immunité) -> vont dans 'forces' (Panneau Super Efficace)
+          forces.push({type:att, mult:label}); 
+        
+        // ECHANGE: si l'attaque est PEU EFFICACE/IMMUNISÉE (x0, x0.25, x0.5) pour la défense -> Va dans la case "Peu Efficace/Immunisé (x0, x0.25, x0.5)"
         } else if(mult === 0 || mult === 0.5 || mult === 0.25){
           let label = 'x' + mult;
           if(mult === 0.5) label = 'x0.5';
           if(mult === 0.25) label = 'x0.25';
           if(mult === 0) label = 'x0';
-          forces.push({type:att, mult:label});
+          weaknesses.push({type:att, mult:label}); 
         } else {
           neutral.push({type:att, mult:'x1'});
         }
       });
+      // showResults affiche forces dans le 1er panneau et weaknesses dans le 2ème. Les listes ont été ajustées ci-dessus.
       showResults(root, {forces, weaknesses, neutral}, 'defense-double');
     });
   });
