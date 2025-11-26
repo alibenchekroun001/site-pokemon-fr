@@ -173,44 +173,51 @@ function defenseSingleMode(root){
 }
 
 function defenseDoubleMode(root){
-  clearAndFocus(root);
-  root.appendChild(make('Mode Défense (2 types) — Choisissez le premier type'));
-  createTypeGrid(root, (first) => {
-    // show second selection (small grid)
-    clearAndFocus(root);
-    const info = document.createElement('div'); info.className='center';
-    info.innerHTML = `<h2>Choisissez le deuxième type (1er: ${first})</h2>`;
-    root.appendChild(info);
-    createTypeGrid(root, (second) => {
-      // forces stockera les "faiblesses de défense" (Super Efficace: x2, x4)
-      // weaknesses stockera les "résistances de défense" (Peu Efficace/Immunisé: x0, x0.25, x0.5)
-      const forces = [], weaknesses = [], neutral = [];
-      TYPES.forEach(att => {
-        const m1 = getMultiplier(att, first);
-        const m2 = getMultiplier(att, second);
-        const mult = +(m1 * m2); // numeric
-        
-        // ECHANGE: si l'attaque est SUPER EFFICACE (x2 ou x4) pour la défense -> Va dans la case "Super Efficace (x2 ou x4)"
-        if(mult === 2 || mult === 4){
-          let label = mult === 4 ? 'x4' : 'x2';
-          forces.push({type:att, mult:label}); 
-        
-        // ECHANGE: si l'attaque est PEU EFFICACE/IMMUNISÉE (x0, x0.25, x0.5) pour la défense -> Va dans la case "Peu Efficace/Immunisé (x0, x0.25, x0.5)"
-        } else if(mult === 0 || mult === 0.5 || mult === 0.25){
-          let label = 'x' + mult;
-          if(mult === 0.5) label = 'x0.5';
-          if(mult === 0.25) label = 'x0.25';
-          if(mult === 0) label = 'x0';
-          weaknesses.push({type:att, mult:label}); 
-        } else {
-          neutral.push({type:att, mult:'x1'});
-        }
-      });
-      // showResults affiche forces dans le 1er panneau et weaknesses dans le 2ème. Les listes ont été ajustées ci-dessus.
-      showResults(root, {forces, weaknesses, neutral}, 'defense-double');
-    });
-  });
+  clearAndFocus(root);
+  root.appendChild(make('Mode Défense (2 types) — Choisissez le premier type'));
+  createTypeGrid(root, (first) => {
+    // show second selection
+    clearAndFocus(root);
+    const info = document.createElement('div'); 
+    info.className='center';
+    info.innerHTML = `<h2>Choisissez le deuxième type (1er: ${first})</h2>`;
+    root.appendChild(info);
+
+    createTypeGrid(root, (second) => {
+      const forces = [], weaknesses = [], neutral = [];
+      TYPES.forEach(att => {
+        const m1 = getMultiplier(att, first);
+        const m2 = getMultiplier(att, second);
+        const mult = +(m1 * m2); 
+
+        if(mult === 2 || mult === 4){
+          let label = mult === 4 ? 'x4' : 'x2';
+          forces.push({type:att, mult:label}); 
+        } else if(mult === 0 || mult === 0.5 || mult === 0.25){
+          let label = 'x' + mult;
+          if(mult === 0.5) label = 'x0.5';
+          if(mult === 0.25) label = 'x0.25';
+          if(mult === 0) label = 'x0';
+          weaknesses.push({type:att, mult:label}); 
+        } else {
+          neutral.push({type:att, mult:'x1'});
+        }
+      });
+      showResults(root, {forces, weaknesses, neutral}, 'defense-double');
+    });
+
+    // --- appliquer la classe CSS pour le premier type choisi ---
+    const gridCells = document.querySelectorAll('.type-grid .type-cell');
+    gridCells.forEach(cell => {
+      if(cell.dataset.type === first){
+        cell.classList.add('type-selected'); // applique le style blanc/noir et non-cliquable
+        cell.removeEventListener('click', cell.onclick); // désactive le clic
+      }
+    });
+  });
 }
+
+
 
 // ---------- Initial wiring ----------
 window.addEventListener('DOMContentLoaded', () => {
@@ -246,3 +253,28 @@ window.addEventListener('DOMContentLoaded', () => {
   // auto-open attaque par défaut
   attackMode(app);
 });
+function addBackButton() {
+    const btn = document.createElement("button");
+    btn.id = "backButton";
+    btn.textContent = "Retour";
+
+    btn.style.display = "block";
+    btn.style.margin = "40px auto";
+    btn.style.padding = "12px 20px";
+    btn.style.background = "#777777ff";
+    btn.style.color = "white";
+    btn.style.border = "none";
+    btn.style.borderRadius = "8px";
+    btn.style.cursor = "pointer";
+    btn.style.fontSize = "16px";
+
+    btn.addEventListener("click", () => {
+        const app = document.getElementById('app');
+        app.innerHTML = ''; // vide tout
+        attackMode(app);     // recharge le mode attaque par défaut
+    });
+
+    document.querySelector("main.container").appendChild(btn);
+}
+
+window.addEventListener("DOMContentLoaded", addBackButton);

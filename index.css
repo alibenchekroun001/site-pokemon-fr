@@ -45,6 +45,12 @@ h1{text-align:center;margin-bottom:20px}
 
 /* spacing between the 3 parts (approximately 10px as requested is controlled by --gap and margin) */
 
+.type-selected {
+  background: #fff !important; /* blanc */
+  color: #000 !important;       /* texte noir */
+  cursor: not-allowed !important;
+}
+
 
 /* footer */
 footer{margin-top:18px}
